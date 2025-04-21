@@ -70,7 +70,7 @@ Build the client image (native):
 ./mvnw -pl another-client -Pnative -Dspring-boot.build-image.imageName=another-authorization-client:local spring-boot:build-image
 ```
 
-### Start the docker compose
+### Start the docker compose with the native images
 
 ```shell
 docker compose -f local.compose.yaml up
