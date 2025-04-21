@@ -1,0 +1,65 @@
+services:
+  postgresql:
+    container_name: another-authorization-db
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_PASSWORD: postgres
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - openfga_network
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.2
+    container_name: another-authorization-keycloak
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgresql:5432/postgres
+      KC_DB_USERNAME: postgres
+      KC_DB_PASSWORD: postgres
+      KC_HEALTH_ENABLED: "true"
+      KC_HOSTNAME: keycloak
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+    healthcheck:
+      test: ['CMD-SHELL', '[ -f /tmp/HealthCheck.java ] || echo "public class HealthCheck { public static void main(String[] args) throws java.lang.Throwable { System.exit(java.net.HttpURLConnection.HTTP_OK == ((java.net.HttpURLConnection)new java.net.URL(args[0]).openConnection()).getResponseCode() ? 0 : 1); } }" > /tmp/HealthCheck.java && java /tmp/HealthCheck.java http://localhost:9000/health/live']
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    command: start-dev --import-realm
+    volumes:
+      - ./realm-export.json:/opt/keycloak/data/import/realm-export.json
+    networks:
+      - openfga_network
+  another-client:
+    container_name: another-client
+    image: another-authorization-client:local
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    environment:
+      spring.security.oauth2.client.provider.keycloak.token-uri: http://keycloak:8080/realms/another-authorization/protocol/openid-connect/token
+      another-server.base-url: http://another-server:8081
+    networks:
+      - openfga_network
+  another-server:
+    container_name: another-server
+    image: another-authorization-server:local
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    environment:
+      spring.security.oauth2.resourceserver.jwt.issuer-uri: http://keycloak:8080/realms/another-authorization
+      openfga.base-url: http://openfga:8080
+      openfga.store-id: 01JSBTQABT9ZMY9R151H2J6FWR
+      openfga.authorization-model-id: 01JSBTQCFJDPTNTFWBQCC9XEK0
+    networks:
+      - openfga_network
+networks:
+  openfga_network:
+    external: true

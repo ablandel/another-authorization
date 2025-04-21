@@ -1,0 +1,38 @@
+services:
+  postgresql:
+    container_name: another-authorization-db
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_PASSWORD: postgres
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - openfga_network
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.2
+    container_name: another-authorization-keycloak
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgresql:5432/postgres
+      KC_DB_USERNAME: postgres
+      KC_DB_PASSWORD: postgres
+      KC_HEALTH_ENABLED: "true"
+      KC_HOSTNAME: localhost
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+    ports:
+      - "8085:8080"
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    command: start-dev --import-realm
+    volumes:
+      - ./realm-export.json:/opt/keycloak/data/import/realm-export.json
+    networks:
+      - openfga_network
+networks:
+  openfga_network:
+    external: true

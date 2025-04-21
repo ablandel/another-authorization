@@ -1,0 +1,13 @@
+services:
+  openfga:
+    image: openfga/openfga:v1.8
+    container_name: another-authorization-openfga
+    ports:
+      - "8080:8080"
+      - "3000:3000"
+    command: run
+    networks:
+      - openfga_network
+networks:
+  openfga_network:
+    name: openfga_network

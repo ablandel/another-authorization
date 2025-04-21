@@ -1,0 +1,25 @@
+server:
+  port: 8082
+logging:
+  file:
+    name: another-client.log
+  logback:
+    rollingpolicy:
+      file-name-pattern: another-client-%d{yyyy-MM-dd}.%i.log
+      max-file-size: 100KB
+      max-history: 5
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: another-client
+            client-secret: another-client-secret
+            authorization-grant-type: client_credentials
+            scope: openid
+        provider:
+          keycloak:
+            token-uri: http://localhost:8085/realms/another-authorization/protocol/openid-connect/token
+another-server:
+  base-url: http://localhost:8081
