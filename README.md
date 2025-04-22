@@ -16,7 +16,7 @@ First, start the OpenFGA instance via the `openfga.compose.yaml` compose file:
 docker compose -f openfga.compose.yaml up
 ```
 
-Then, import the authorization model defined in `openfga_model.dsl` via the OpenFGA playground
+Then, import the authorization model defined in `openfga_model.fga` via the OpenFGA playground
 (at http://localhost:3000/playground) or via the OpenFGA APIs, update the `another-server` `openfga.store-id` and
 `openfga.authorization-model-id` values with the mounted OpenFGA instance.
 

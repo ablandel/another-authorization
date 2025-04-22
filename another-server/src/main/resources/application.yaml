@@ -17,6 +17,6 @@ spring:
         jwt:
           issuer-uri: http://localhost:8085/realms/another-authorization
 openfga:
-  base-url: http://localhost:8080
+  api-url: http://localhost:8080
   store-id: 01JSBTQABT9ZMY9R151H2J6FWR
   authorization-model-id: 01JSBTQCFJDPTNTFWBQCC9XEK0

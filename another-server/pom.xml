@@ -12,7 +12,7 @@
     <name>Another Server</name>
     <description>Simple server used to test the authorization workflow.</description>
     <properties>
-        <openfga-sdk.version>0.8.1</openfga-sdk.version>
+        <openfga-sdk.version>0.2.0</openfga-sdk.version>
     </properties>
     <dependencies>
         <dependency>
@@ -37,7 +37,7 @@
         </dependency>
         <dependency>
             <groupId>dev.openfga</groupId>
-            <artifactId>openfga-sdk</artifactId>
+            <artifactId>openfga-spring-boot-starter</artifactId>
             <version>${openfga-sdk.version}</version>
         </dependency>
         <dependency>

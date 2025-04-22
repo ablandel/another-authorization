@@ -55,7 +55,7 @@ services:
         condition: service_healthy
     environment:
       spring.security.oauth2.resourceserver.jwt.issuer-uri: http://keycloak:8080/realms/another-authorization
-      openfga.base-url: http://openfga:8080
+      openfga.api-url: http://openfga:8080
       openfga.store-id: 01JSBTQABT9ZMY9R151H2J6FWR
       openfga.authorization-model-id: 01JSBTQCFJDPTNTFWBQCC9XEK0
     networks:
